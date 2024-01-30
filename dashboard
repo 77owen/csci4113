@@ -1,0 +1,48 @@
+#!/bin/bash
+#get system information
+uptime=$(uptime | awk '{print $3}' | sed 's/.$//' )
+loadAverage=$(uptime | awk '{print $(NF-2), $(NF-1), $(NF)}')
+freemem=$(free | awk '/Mem/{print $3}')
+swapused=$(free | awk '/Swap/{print $3}')
+users=$(cat /etc/passwd | awk -F':' '{print $NF}' | sort | uniq -c | sed 's/^ *//g' | sed '/nologin/d')
+interfaces=$(ip addr | awk '/inet / {print $2, $NF}')
+numfiles=$(find /boot -type f | wc -l)
+numdirs=$(find /boot -type d | wc -l)
+numlinks=$(find /boot -type l | wc -l)
+#check internet connectivity
+ping=$(ping -c 1 -w 2 8.8.8.8 | awk '/transmitted/ {print $4}')
+if [ $ping -gt 0 ]; then
+  ping="Yes"
+else
+  ping="No"
+fi
+
+
+
+
+echo "Uptime: $uptime"
+echo "CPU Load Averages: $loadAverage"
+echo "Free RAM: $(($freemem/1024)) MB"
+echo "Swap Used: $(($swapused/1024)) MB"
+
+echo ""
+
+echo "Interface Addresses"
+echo "$interfaces"
+echo "Internet Connectivity: $ping"
+
+echo ""
+
+echo "Users | Shell"
+echo "$users"
+
+echo ""
+
+echo "Filesystem /boot"
+echo "Number of files: $numfiles"
+echo "Number of links: $numlinks"
+echo "Number of directories: $numdirs"
+
+
+
+
