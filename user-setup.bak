@@ -1,0 +1,9 @@
+#!/bin/bash
+username=("mscott", "jhalpert", "dschrute", "pbeesly", "abernard", "plapin", "shudson", "amartin", "omartinez", "kmalone", "dphilbin", "kkapoor", "tflenderson", "mpalmer", "cbratton", "your identikey")
+name=("Michael Scott", "Jim Halpert", "Dwight Schrute", "Pam Beesly", "Andy Bernard", "Phyllis Lapin", "Stanley Hudson", "Angela Martin", "Oscar Martinez", "Kevin Malone", "Darryl Philbin", "Kelly Kapoor", "Toby Flenderson", "Meredith Palmer", "Creed Bratton", "Your Name")
+title=("Regional Manager", "Assistant Regional Manager", "Assistant to the Regional Manager", "Receptionist", "Regional Director in Charge of Sales", "Sales Representative", "Sales Representative", "Senior Accountant", "Accountant", "Accountant", "Warehouse Foreman", "Customer Service Representative", "Human Resources", "Supplier Relations", "Quality Assurance Representative", "System Administrator")
+
+useradd --user-group --create-home --shell "/bin/bash"  --uid 3000 -b "/home" --skel "/etc/skel" --password --groups
+
+
+
