@@ -1,15 +1,35 @@
 #!/bin/bash
-username=("mscott", "jhalpert", "dschrute", "pbeesly", "abernard", "plapin", "shudson", "amartin", "omartinez", "kmalone", "dphilbin", "kkapoor", "tflenderson", "mpalmer", "cbratton", "your identikey")
-name=("Michael Scott", "Jim Halpert", "Dwight Schrute", "Pam Beesly", "Andy Bernard", "Phyllis Lapin", "Stanley Hudson", "Angela Martin", "Oscar Martinez", "Kevin Malone", "Darryl Philbin", "Kelly Kapoor", "Toby Flenderson", "Meredith Palmer", "Creed Bratton", "Your Name")
-title=("Regional Manager", "Assistant Regional Manager", "Assistant to the Regional Manager", "Receptionist", "Regional Director in Charge of Sales", "Sales Representative", "Sales Representative", "Senior Accountant", "Accountant", "Accountant", "Warehouse Foreman", "Customer Service Representative", "Human Resources", "Supplier Relations", "Quality Assurance Representative", "System Administrator")
+
+count=3000
+username=("mscott" "jhalpert" "dschrute" "pbeesly" "abernard" "plapin" "shudson" "amartin" "omartinez" "kmalone" "dphilbin" "kkapoor" "tflenderson" "mpalmer" "cbratton" "owbi7083")
+#name=("Michael Scott" "Jim Halpert" "Dwight Schrute" "Pam Beesly" "Andy Bernard" "Phyllis Lapin" "Stanley Hudson" "Angela Martin" "Oscar Martinez" "Kevin Malone" "Darryl Philbin" "Kelly Kapoor" "Toby Flenderson" "Meredith Palmer" "Creed Bratton" "Owen Billings")
+title=("Regional Manager" "Assistant Regional Manager" "Assistant to the Regional Manager" "Receptionist" "Regional Director in Charge of Sales" "Sales Representative" "Sales Representative" "Senior Accountant" "Accountant" "Accountant" "Warehouse Foreman" "Customer Service Representative" "Human Resources" "Supplier Relations" "Quality Assurance Representative" "System Administrator")
+
+
+echo "#!/bin/bash" > "/etc/profile.d/umask.sh"
+echo "umask 077" >> "/etc/profile.d/umask.sh"
+chmod +x "/etc/profile.d/umask.sh"
+
+#Add the system administrator (you) to the wheel or sudo groups so that you can run commands using sudo.
 
 
 
+groupadd managers
+groupadd sales
+groupadd accounting
 
 
+for i in "${!username[@]}"; do
+    useradd --user-group --create-home --shell "/bin/bash"  --uid $count -b "/home" --skel "/etc/skel" --groups "${username[$i]}"
+    echo "${username[$i]}:goat1604" | chpasswd
 
-
-useradd --user-group --create-home --shell "/bin/bash"  --uid 3000 -b "/home" --skel "/etc/skel" --password --groups
-
-
-
+    if [[ "${title[$i]}" == *"Manager"* ]]; then
+        usermod -aG managers "${username[$i]}"
+    elif [[ "${title[$i]}" == *"Sales"* ]]; then
+        usermod -aG sales "${username[$i]}"
+    elif [[ "${title[$i]}" == *"Accountant"* ]]; then
+        usermod -aG accounting "${username[$i]}"
+    fi
+    count=$((count+1))
+done
+usermod -aG sudo "owbi7083"
