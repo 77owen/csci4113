@@ -33,3 +33,4 @@ for i in "${!username[@]}"; do
     count=$((count+1))
 done
 usermod -aG sudo "owbi7083"
+usermod -aG wheel "owbi7083"
