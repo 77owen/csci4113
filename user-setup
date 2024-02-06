@@ -10,7 +10,6 @@ echo "#!/bin/bash" > "/etc/profile.d/umask.sh"
 echo "umask 077" >> "/etc/profile.d/umask.sh"
 chmod +x "/etc/profile.d/umask.sh"
 sudo mkdir -p /etc/skel/etc/skel
-#Add the system administrator (you) to the wheel or sudo groups so that you can run commands using sudo.
 
 
 
