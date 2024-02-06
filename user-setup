@@ -20,7 +20,7 @@ groupadd accounting
 
 
 for i in "${!username[@]}"; do
-    useradd --user-group --create-home --shell "/bin/bash"  --uid $count -b "/home" --skel "/etc/skel" --groups "${username[$i]}"
+    useradd --user-group --create-home --shell "/bin/bash"  --uid $count -b "/home" --skel "/etc/skel" "${username[$i]}"
     echo "${username[$i]}:goat1604" | chpasswd
 
     if [[ "${title[$i]}" == *"Manager"* ]]; then
