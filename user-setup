@@ -21,6 +21,7 @@ groupadd accounting
 for i in "${!username[@]}"; do
     useradd -mU --shell "/bin/bash" --uid $count -b "/home" "${username[$i]}"
     echo "${username[$i]}:goat1604" | chpasswd
+	chown -R "${username[$i]}" "/home/${username[$i]}" 
 
     if [[ "${title[$i]}" == *"Manager"* ]]; then
         usermod -aG managers "${username[$i]}"
