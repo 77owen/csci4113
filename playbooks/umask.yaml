@@ -1,0 +1,13 @@
+---
+- name: Umask.sh Copy
+  hosts: saclass
+  become: true
+
+  tasks:
+    - name: Copy umask.sh file
+      copy:
+        src: /etc/profile.d/umask.sh
+        dest: /etc/profile.d/umask.sh
+        owner: root
+        group: root
+        mode: 'u=rw,go=r'
