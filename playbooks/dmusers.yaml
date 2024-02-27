@@ -4,6 +4,19 @@
   become: true
   remote_user: owbi7083
   tasks:
+  - name: Create sales group
+    group:
+      name: sales
+      state: present
+  - name: Create managers group
+    group:
+      name: managers
+      state: present
+  - name: Create accounting group
+    group:
+      name: accounting
+      state: present
+
   - name: Set parameters for user mscott
     user:
       name: mscott
@@ -12,9 +25,8 @@
       home: /home/mscott
       createhome: true
       skeleton: /etc/skel
-      groups: 'managers'
+      groups: managers
       password: $6$kewKfFZUvzc1HTuk$iTWxB9c2fF1jD56jhTHNV3gWBaXa02QK907Zr7nCVddIihSxJcOAFAek0Kh.lma/a2r2f/H3BHse2NDNeVhIA1
-
 
   - name: Set parameters for user jhalpert
     user:
@@ -24,9 +36,8 @@
       home: /home/jhalpert
       createhome: true
       skeleton: /etc/skel
-      groups: 'managers'
+      groups: managers
       password: $6$LlCIVoF37zK4CXCC$hY.GxgXytgqJutROdHQr861yONULFuOlOSwT6BSeBrk0IxPP3bPDP4SzVBEHGwMqzhcryqw0/9zX5GR1ak4ZX/
-
 
   - name: Set parameters for user dschrute
     user:
@@ -36,9 +47,8 @@
       home: /home/dschrute
       createhome: true
       skeleton: /etc/skel
-      groups: 'managers'
+      groups: managers
       password: $6$XhWT7kccbdJ.4M0Y$GZzIq1eA/hI9fVlSXzSqsS4zc0foLqiDeL2MIMUglDwzLqT254JrphhF.Dxdcap12yBgm6YUUqx2W6ZXwECbG/
-
 
   - name: Set parameters for user pbeesly
     user:
@@ -50,7 +60,6 @@
       skeleton: /etc/skel
       password: $6$dYbdoTd00C3wv1Go$kTVRyHyOjOmDRytGCVrl6KjeXYnBr08lXPWNf9JjDRZEqIxJ8AUbxTfs7IuWh5hnX2wYuh9XFqHmVKvDApu/6/
 
-
   - name: Set parameters for user abernard
     user:
       name: abernard
@@ -59,9 +68,8 @@
       home: /home/abernard
       createhome: true
       skeleton: /etc/skel
-      groups: 'sales'
+      groups: sales
       password: $6$BOnJzK1.noxn8NsM$/tZJWArCMLsKPTIn8G6303Qgqw1e3s5NDfkjn.qGiyYNRQdXHuxOKeOt1QilQQ1VolTujpPh3r70FeQB6lSfv1
-
 
   - name: Set parameters for user plapin
     user:
@@ -71,9 +79,8 @@
       home: /home/plapin
       createhome: true
       skeleton: /etc/skel
-      groups: 'sales'
+      groups: sales
       password: $6$YPFykXg8BaMBDYx3$3/feb.dtAvy/9r/IOr1EA5HQTad9b3dBHE1nWXM6BIhJ80g2mpLIpnc3Y68H.CPUHxhnpv33jJJkRQsuCOu78/
-
 
   - name: Set parameters for user shudson
     user:
@@ -83,9 +90,8 @@
       home: /home/shudson
       createhome: true
       skeleton: /etc/skel
-      groups: 'sales'
+      groups: sales
       password: $6$udjt0Mx94O0Xifzd$LXtYwkm7zpJ9LsnjoPHYzFiAEXo9B6BTCCji8dkLB37h6afGrS7gqiEOnXzlGyWnGsDOw52QTVloZVj43T2gQ.
-
 
   - name: Set parameters for user amartin
     user:
@@ -95,9 +101,8 @@
       home: /home/amartin
       createhome: true
       skeleton: /etc/skel
-      groups: 'accounting'
+      groups: accounting
       password: $6$MLMERpcg3EvRBb9R$NXdTzbSYHs/4/sopNVWCOMGMlmIJcWePptv5EJmyMU61CeviMy96fAah0LKeYv7utbbzZLtZM.76KX3aZ6zu9.
-
 
   - name: Set parameters for user omartinez
     user:
@@ -107,9 +112,8 @@
       home: /home/omartinez
       createhome: true
       skeleton: /etc/skel
-      groups: 'accounting'
+      groups: accounting
       password: $6$/7ouRybvfPjCuif5$vnKUuia.6zSPc6BbU/DRlQ.k3Rv/7rXNZlP10AMUZgCFXYeumSmNNOItPgqoVQZC.mHWRZzLAJXn6bReds67W0
-
 
   - name: Set parameters for user kmalone
     user:
@@ -119,9 +123,8 @@
       home: /home/kmalone
       createhome: true
       skeleton: /etc/skel
-      groups: 'accounting'
+      groups: accounting
       password: $6$7YVG0ZUrRj1tQhq7$6tzK4s1KQUr5syapEhMahpJo3I7IfOqZD/5xTKLPheQkPHVFREzAejC4vLAKjpZ7Zy.VEYB8szUM.zT/SaER6.
-
 
   - name: Set parameters for user dphilbin
     user:
@@ -133,7 +136,6 @@
       skeleton: /etc/skel
       password: $6$UKFnB.if7rvhCJTC$6EzYYV4R/A6Jzlxoa9YkhBbMb604BIzVCCfKjvrM3hQ5HKJ0.G.0.vreqeqjOO1bLyg61mB94yY2g5z2/4Esg.
 
-
   - name: Set parameters for user kkapoor
     user:
       name: kkapoor
@@ -143,7 +145,6 @@
       createhome: true
       skeleton: /etc/skel
       password: $6$bGaGPH4VsLR8wIAu$FsOE/fOWssh3YAZv25lg/YQ25YgaSajcBnEjkv.oLFygxiPVZ3n5U6tZzaYyzO64xFxSLkwMukuMq0G1HccCA/
-
 
   - name: Set parameters for user tflenderson
     user:
@@ -155,7 +156,6 @@
       skeleton: /etc/skel
       password: $6$FCXbvxWRu/Yxgv6q$2QG1L92/H6OTMIykz8Z2cGp0CxM69Zqep3qm7y8De9r4MKGkFGcOGPEvyRk/e6rDvgIyN35wqbXs28YWrrKja/
 
-
   - name: Set parameters for user mpalmer
     user:
       name: mpalmer
@@ -166,7 +166,6 @@
       skeleton: /etc/skel
       password: $6$JEa6JEFzUzJBBOsD$BNvmClv3L1tv93sQzvWOQDver7lGifsOTYzkWtRpmTOW9jL3AwsmdDONuoCXXcZ5OlW.IZTNXuDi25VAlnvrk0
 
-
   - name: Set parameters for user cbratton
     user:
       name: cbratton
@@ -176,7 +175,6 @@
       createhome: true
       skeleton: /etc/skel
       password: $6$aYw5Vkg1In2.5Is5$p5bdcwN4rFnleo/Pf42hPQ1w4.tnjfpLf8Zp9yjQ6nf3zmHGEGeAAQemWEXqRTWXrSMe/JyhezIYT.TA1Va8M.
-
 
   - name: Set parameters for user owbi7083
     ignore_errors: true

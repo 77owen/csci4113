@@ -12,6 +12,22 @@ echo "  hosts: saclass" >> "$playbook_file"
 echo "  become: true" >> "$playbook_file"
 echo "  remote_user: owbi7083" >> "$playbook_file"
 echo "  tasks:" >> "$playbook_file"
+
+# Create groups
+echo "  - name: Create sales group" >> "$playbook_file"
+echo "    group:" >> "$playbook_file"
+echo "      name: sales" >> "$playbook_file"
+echo "      state: present" >> "$playbook_file"
+echo "  - name: Create managers group" >> "$playbook_file"
+echo "    group:" >> "$playbook_file"
+echo "      name: managers" >> "$playbook_file"
+echo "      state: present" >> "$playbook_file"
+echo "  - name: Create accounting group" >> "$playbook_file"
+echo "    group:" >> "$playbook_file"
+echo "      name: accounting" >> "$playbook_file"
+echo "      state: present" >> "$playbook_file"
+echo >> "$playbook_file"
+
 # Loop through each user
 while IFS=: read -r user; do
     username=$(echo "$user" | cut -d: -f1)
@@ -19,21 +35,22 @@ while IFS=: read -r user; do
     gecos=$(echo "$user" | cut -d: -f5)
     shell=$(echo "$user" | cut -d: -f7)
 
+   
+
+
     # Find the corresponding shadow entry
     shadow=$(echo "$shadows" | grep "^$username:")
-
     # Find the groups for the user
     user_groups=$(echo "$groups" | awk -F: -v username="$username" '$4 ~ username {print $1}')
-
     # Assign users to the correct groups
     if [[ "$username" == "abernard" || "$username" == "plapin" || "$username" == "shudson" ]]; then
-        user_groups+=" 'sales'"
+        user_groups+=" sales"
     fi
     if [[ "$username" == "mscott" || "$username" == "jhalpert" || "$username" == "dschrute" ]]; then
-        user_groups+=" 'managers'"
+        user_groups+=" managers"
     fi
     if [[ "$username" == "amartin" || "$username" == "omartinez" || "$username" == "kmalone" ]]; then
-        user_groups+=" 'accounting'"
+        user_groups+=" accounting"
     fi
 
     # If me && in wheel group, add sudoers, sudo, and wheel groups on all other machines
@@ -42,7 +59,7 @@ while IFS=: read -r user; do
                 user_groups+=" sudoers, sudo, wheel"
         fi
     fi
-
+    
     # Write user blocks
     echo "  - name: Set parameters for user $username" >> "$playbook_file"
     if [[ "$username" == "owbi7083" ]]; then
@@ -55,7 +72,7 @@ while IFS=: read -r user; do
     echo "      name: $username" >> "$playbook_file"
     echo "      uid: $uid" >> "$playbook_file"
     if [[ -n "$gecos" ]]; then
-        echo "      gecos: $gecos" >> "$playbook_file"
+        echo "      comment: $gecos" >> "$playbook_file"
     fi
     echo "      shell: $shell" >> "$playbook_file"
     echo "      home: /home/$username" >> "$playbook_file" # Add home directory
@@ -67,7 +84,6 @@ while IFS=: read -r user; do
         echo "      groups:$groups" >> "$playbook_file"
     fi
     echo "      password: $(echo "$shadow" | cut -d: -f2)" >> "$playbook_file"
-    echo "" >> "$playbook_file" # New line
-    echo >> "$playbook_file"
+    echo >> "$playbook_file" # Newline
     chown owbi7083:owbi7083 "$playbook_file" # Own file so it can be run without sudo
     done <<< "$users"
