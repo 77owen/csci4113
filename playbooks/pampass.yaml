@@ -1,0 +1,17 @@
+---
+- name: Umask.sh Copy
+  hosts: saclass
+  become: true
+
+  tasks:
+    - name: Update pwquality.conf
+      lineinfile:
+        path: /etc/security/pwquality.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      with_items:
+        - { regexp: '^minlen', line: 'minlen = 10' }
+        - { regexp: '^minclass', line: 'minclass = 3' }
+        - { regexp: '^minclassrepeat', line: 'minclassrepeat = 1' }
+        - { regexp: '^maxrepeat', line: 'maxrepeat = 1' }
+        - { regexp: '^maxclassrepeat', line: 'maxclassrepeat = 2' }
