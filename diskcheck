@@ -1,0 +1,112 @@
+#!/bin/bash
+
+#  Check usage of /, /boot or /tmp every <interval> seconds
+#  Send an email every <mailint> seconds if it exceeds the specified amount
+#  For testing interval=2 and mailint=10
+#  For production set interval=60 and mailint=3600
+
+#  Example usage: ./diskcheck root@localhost  75
+
+mailto=$1 # user email address
+full=$2 # max disk usage limit
+
+#If there are no mailto or full command line arguments, then print out usage instrusctions.
+if [ -z "$mailto" ] || [ -z "$full" ]; then
+  echo "Usage: $0 mailto full%"
+  exit 1
+  
+#Check whether the user supplied an integer parameter by using the [[ extended expression to match digits 0-9 repeated one or more times.
+# The ! inverts the expression to return true if the match fails.
+elif [[ ! $full =~ ^[0-9]+ ]]; then
+  echo "The full% is not a number"
+  exit 1
+
+#Check if the user supplied integer is between 1-99, by using less than(lt) and greather than(gt) comparisons
+elif [ $full -lt 1 ] || [ $full -gt 99 ]; then
+  echo "full% must be 1 to 99"
+  exit 1
+fi
+
+interval=2 #Wait time in seconds between usage checks
+mailint=10 #Delay in seconds between sending email when over usage limit
+fs=('/' '/boot' '/tmp') #directories that should be scanned when checking disk usage
+
+checksize () #function to check filesize
+{
+	#get the name of the filesystem, by using df to list all mounted filesystems and their disk usage,
+	#then only taking the last line with tail -1, and finally getting just the filesystem name with awk,
+	# by printing out the first value
+   dev=`df $2 | tail -1 | awk '{print $1}'`
+   
+   #Check if the filesystem name is null with -z, if it is, print out an error
+   if [ -z "$dev" ]; then
+      echo "Error determining disk usage for $2"
+      exit 1
+   fi
+   
+   # Loop over the list of currently monitored filesystems using a for loop
+   for d in ${devlist[*]}; do
+	 #check if the new filsystem is already being monitored, if yes, to avoid a duplicate exit the function.
+     if [ "$d" == "$dev" ]; then
+       return 1
+     fi
+   done
+   devlist+=$dev # add new filesystem to list
+
+	#Get the usage of the filesystem by using df to list all mounted filesystems and their disk usage,
+	#then only taking the last line with tail -1, and finally getting just the filesystem name with awk,
+	# by printing out the 5th value value
+   usage=`df $2 | tail -1 | awk '{print $5}'`
+   
+   #Check if the usage of the filesystem is greater than (-gt) and exceeds the usage limit
+   # usage::-1 trims the last char from the string: 13% > 13, to compare to another integer
+   if [ ${usage::-1} -gt $full ]; then
+      alert[$1]=$usage #When the usage is over the limit, add the usage value to the alert array
+	  
+	  # subtract the timestamp of the last sent alert from the current date timestamp
+	  # to get time since the last alert was sent
+      dt=$(( $now - ${last[$1]} )) 
+	  
+	  #If the time since the last alert is greater than or equal to (-ge)
+	  #the mail interval, if yes, set the mailit variable to 1, indicating an alert should be sent
+      if [ $dt -ge $mailint ]; then 
+         mailit=1
+      fi
+   fi
+}
+
+#Create the array last for storing the date timestamps, for keeping track of the sent email intervals
+for i in ${!fs[@]};do
+   last[$i]=0
+done
+
+while [ 1 ]; do
+   now=`date +%s` # get current unix timestamp
+   mailit= #init to null value
+   alert=() #init to empty array
+   devlist=() #init to empty array
+   
+   #for each value in the fs(filesystem) array get the current usage of that filesystem
+   for i in ${!fs[*]};do
+      checksize $i ${fs[$i]}
+   done
+
+	#check if the mailit value is not null usign -n
+   if [ -n "$mailit" ]; then
+      echo "Mail sent " `date` # print timestamp of sent email
+      msg="Disk space warning $HOSTNAME" #start construcing email message
+	  
+	  #Loop through each usage value stored in the alert array, to make a string for each alert
+      for i in ${!alert[*]};do
+         last[$i]=$now #Set the time of the last sent email to the current time
+         msg="$msg\n${fs[$i]} is ${alert[$i]} full" #Add the name of the filsystem and it's usage to the msg string
+      done
+	  
+	  #send mail to the user containing the warning msg using the mail command, with -s setting the subject
+	  #and the mailto value being the user email address
+      echo -e "$msg" | mail -s "Disk Space Warning $HOSTNAME" $mailto
+   fi
+
+	#delay between usage checks for $interval seconds
+   sleep $interval
+done

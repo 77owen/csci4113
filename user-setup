@@ -7,7 +7,7 @@ title=("Regional Manager" "Assistant Regional Manager" "Assistant to the Regiona
 
 
 echo "#!/bin/bash" > "/etc/profile.d/umask.sh"
-echo "umask 077" >> "/etc/profile.d/umask.sh"
+echo "umask 007" >> "/etc/profile.d/umask.sh"
 chmod +x "/etc/profile.d/umask.sh"
 sudo mkdir -p /etc/skel/etc/skel
 
